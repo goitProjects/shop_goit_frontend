@@ -23,9 +23,9 @@ export const funcMarkup = data => {
     heart = document.querySelector('.icon-fav');
     if (api.getFavorites(idItem)) {
       heart.classList.add('icon-fav--active');
-      document.querySelector('.fav-text').textContent = 'В избранном';
+      document.querySelector('.fav-text').textContent = 'Add to favourites';
     } else {
-      document.querySelector('.fav-text').textContent = 'В избранное';
+      document.querySelector('.fav-text').textContent = 'In favourites';
       heart.classList.remove('icon-fav--active');
     }
     heart.addEventListener('click', debounce(heartAttack, 300));
@@ -38,11 +38,11 @@ export const funcMarkup = data => {
   function changeClassSeller(e) {
     if (!showHideBlock.classList.contains('item_modal-seller-active')) {
       showHideBlock.classList.add('item_modal-seller-active');
-      showSellerBtn.textContent = 'Скрыть';
+      showSellerBtn.textContent = 'Hide';
       showSellerBtn.classList.add('item_modal--tablet--button-buy-active');
     } else if (showHideBlock.classList.contains('item_modal-seller-active')) {
       showHideBlock.classList.remove('item_modal-seller-active');
-      showSellerBtn.textContent = 'Информация о продавце';
+      showSellerBtn.textContent = "Author's contact info";
       showSellerBtn.classList.remove('item_modal--tablet--button-buy-active');
     }
   }
@@ -53,7 +53,7 @@ export const funcMarkup = data => {
 function heartAttack(e) {
   if (api.getFavorites(idItem)) {
     heart.classList.remove('icon-fav--active');
-    document.querySelector('.fav-text').textContent = 'В избранное';
+    document.querySelector('.fav-text').textContent = 'Add to favourites';
     const user = JSON.parse(localStorage.getItem('user-info'));
     const arrayFav = user.favorites;
     const userID = user.userId;
@@ -70,7 +70,7 @@ function heartAttack(e) {
     deleteUserFavourite(userID, idItem, userToken);
   } else if (!api.getFavorites(idItem)) {
     heart.classList.add('icon-fav--active');
-    document.querySelector('.fav-text').textContent = 'В избранном';
+    document.querySelector('.fav-text').textContent = 'In favourites';
     const user = JSON.parse(localStorage.getItem('user-info'));
     const userID = user.userId;
     const userToken = user.token;

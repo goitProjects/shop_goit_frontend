@@ -94,8 +94,8 @@ function submitForm(event) {
   document.querySelector('.img-error').classList.add('hide');
   document.querySelector('.description-error').classList.add('hide');
   document.querySelector('.price-error').classList.add('hide');
-  document.querySelector('.price-error-2').classList.add('hide');
   document.querySelector('.title-error').classList.add('hide');
+  document.querySelector('.price-error-2').classList.add('hide');
   if (!document.querySelector('#fp1').files) {
     document.querySelector('.img-error').classList.remove('hide');
     return;

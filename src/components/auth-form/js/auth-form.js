@@ -89,7 +89,6 @@ const inputData = {
 };
 
 function hendelInputSave(e) {
-  console.log('hey');
   inputData[e.currentTarget.name][e.target.name] = e.target.value;
 
   if (!(inputData.userSignUp.passwordRepeat === undefined)) {
