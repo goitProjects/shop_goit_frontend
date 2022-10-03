@@ -9,7 +9,7 @@ node("nodejs"){
             string(credentialsId: 'tech_alert_bot_api_key', variable: 'telegramAlertChannelBotApiToken'),
             string(credentialsId: 'tech_alert_chat_id', variable: 'telegramAlertChannelChatId'),
 
-            //add scp redential for https://shop-pl.goit.global/
+            //add scp redential for https://shop.p.goit.global/
             string(credentialsId: 'ssh user_host_for_frontend_stud', variable: 'sshUserAndHost')
         ]) {
                 env.telegramNotifyChannelBotApiToken = telegramNotifyChannelBotApiToken;
@@ -61,8 +61,15 @@ node("nodejs"){
 
         if (success) {
             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                //sent files to https://shop-pl.goit.global/
-                sh "scp -r ./build/* ${env.sshUserAndHost}:/home/frontend/sites/www/shop-pl.goit.global/html"
+                //create folder for textbook 
+                def mkdirCmd = "mkdir -p /home/frontend/sites/www/shop.p.goit.global/pl/html"
+                sh "ssh ${env.sshUserAndHost} ${mkdirCmd}"
+
+                //sent files to https://shop.p.goit.global/
+                sh "scp -r ./build/* ${env.sshUserAndHost}:/home/frontend/sites/www/shop.p.goit.global/html"
+
+                //clear project build folder
+                sh "rm -rf .[!.]* *"
             }
         }
     }
