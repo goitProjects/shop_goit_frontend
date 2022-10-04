@@ -1,4 +1,4 @@
-import '../loader/loader.css';
+import './loader.css';
 // ===========================
 const body = document.querySelector('body');
 const main = document.querySelector('main');

@@ -1,7 +1,7 @@
-import '../adv-block/ads-css/adsSection.css';
+import './ads-css/adsSection.css';
 import './ads-css/arround-block.css';
 import Siema from 'siema';
-import adsTemplate from '../adv-block/templates/block__list/adsTemplate.hbs';
+import adsTemplate from './templates/block__list/adsTemplate.hbs';
 import adsTemplateArround from './templates/arround-block__list/arround-block__list.hbs';
 import throttle from 'lodash.throttle';
 // =====================images==============================
