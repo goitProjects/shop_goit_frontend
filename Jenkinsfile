@@ -1,6 +1,6 @@
 @Library('jenkins-common')_
  
-node("nodejs"){
+node("all-biulds"){
     stage('Load credentials') {
         withCredentials([
             string(credentialsId: 'goit_jenkins_build_bot_api_key', variable: 'telegramNotifyChannelBotApiToken'),
@@ -61,8 +61,12 @@ node("nodejs"){
 
         if (success) {
             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                //sent files to https://shop-en.goit.global/
-                sh "scp -r ./build/* ${env.sshUserAndHost}:/home/frontend/sites/www/shop-en.goit.global/html"
+                //create folder
+                def mkdirCmd = "mkdir -p /home/frontend/sites/www/shop.p.goit.global/html/en"
+                sh "ssh ${env.sshUserAndHost} ${mkdirCmd}"
+
+                //sent files to https://shop.p.goit.global/en
+                sh "scp -r ./dist/* ${env.sshUserAndHost}:/home/frontend/sites/www/shop.p.goit.global/html/en"
             }
         }
     }
