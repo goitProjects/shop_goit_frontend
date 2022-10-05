@@ -66,7 +66,7 @@ node("all-biulds"){
                 sh "ssh ${env.sshUserAndHost} ${mkdirCmd}"
 
                 //sent files to https://shop.p.goit.global/
-                sh "scp -r ./build/* ${env.sshUserAndHost}:/home/frontend/sites/www/shop.p.goit.global/html"
+                sh "scp -r ./dist/* ${env.sshUserAndHost}:/home/frontend/sites/www/shop.p.goit.global/html"
 
                 //clear project build folder
                 sh "rm -rf .[!.]* *"
