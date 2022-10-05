@@ -62,11 +62,11 @@ node("all-biulds"){
         if (success) {
             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                 //create folder for textbook 
-                def mkdirCmd = "mkdir -p /home/frontend/sites/www/shop.p.goit.global/pl/html"
+                def mkdirCmd = "mkdir -p /home/frontend/sites/www/shop.p.goit.global/html/pl"
                 sh "ssh ${env.sshUserAndHost} ${mkdirCmd}"
 
                 //sent files to https://shop.p.goit.global/
-                sh "scp -r ./dist/* ${env.sshUserAndHost}:/home/frontend/sites/www/shop.p.goit.global/html"
+                sh "scp -r ./dist/* ${env.sshUserAndHost}:/home/frontend/sites/www/shop.p.goit.global/html/pl"
 
                 //clear project build folder
                 sh "rm -rf .[!.]* *"
