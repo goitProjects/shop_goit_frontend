@@ -95,7 +95,7 @@ function mainInfo(word) {
       object.descriptionCategory =
         'Need help promoting small business? Hurry up, come exactly to us';
       break;
-    case 'recreation-and-sports':
+    case 'recreationAndSport':
       object.nameCategory = 'Recreation and sport';
       object.descriptionCategory =
         'Looking for a place to hide from the hustle and bustle and everyday life. We will show you the place you dreamed of';
