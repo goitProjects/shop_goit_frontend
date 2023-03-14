@@ -17,6 +17,7 @@ import JBL from '../../assets/images/OLXProject/JBL-min.png';
 import playstation from '../../assets/images/OLXProject/playstation-4-min.png';
 import shkaf from '../../assets/images/OLXProject/shkaf-min.png';
 import water from '../../assets/images/OLXProject/water-min.png';
+import Glider from 'glider-js';
 // =========================================================
 const blockList = document.querySelector('.block__list');
 const arroundBlockList = document.querySelector('.arround-block__list');
@@ -40,70 +41,53 @@ const arroundItem = [
   { image: water, name: 'Washbasin', price: 1199 },
 ];
 // =========================================================
-window.addEventListener('resize', throttle(changeSize, 500));
-function changeSize() {
+
+const renderAds = () => {
   if (window.matchMedia('(max-width: 767px)').matches) {
-    blockList.innerHTML = newItem.map(item => adsTemplate(item));
-    const mySiema = new Siema({
-      draggable: false,
-      selector: blockList,
-      loop: true,
-      duration: 1000,
+    blockList.innerHTML = newItem.map(item => adsTemplate(item)).join('');
+    const glider = new Glider(blockList, {
+      slidesToShow: 1,
+      draggable: true,
     });
     setInterval(() => {
-      mySiema.next();
+      glider.scrollItem(glider.page + 1);
     }, 3500);
     arroundBlockList.innerHTML = '';
     horizontalBlock.innerHTML = '';
-    // blockList.classList.add('block__list-show');
-    // arroundBlockList.classList.add('arround-block__list-show');
-    // horizontalBlock.classList.add('horizontal-block-show');
   } else if (
     window.matchMedia('(min-width: 768px)' && '(max-width: 1279px)').matches
   ) {
-    blockList.innerHTML = newItem.map(item => adsTemplate(item));
-    const mySiema = new Siema({
-      draggable: false,
-      selector: blockList,
-      loop: true,
-      duration: 1000,
+    blockList.innerHTML = newItem.map(item => adsTemplate(item)).join('');
+    const glider = new Glider(blockList, {
+      slidesToShow: 1,
+      draggable: true,
     });
     setInterval(() => {
-      mySiema.next();
+      glider.scrollItem(glider.page + 1);
     }, 3500);
     arroundBlockList.innerHTML = arroundItem
       .map(item => adsTemplateArround(item))
       .slice(0, 2)
       .join('');
     horizontalBlock.innerHTML = '';
-    // blockList.classList.add('block__list-show');
-    // arroundBlockList.classList.add('arround-block__list-show');
-    // horizontalBlock.classList.add('horizontal-block-show');
-  } else if (window.matchMedia('(min-width: 1280px)').matches) {
-    blockList.innerHTML = newItem.map(item => adsTemplate(item));
-    const mySiema = new Siema({
-      draggable: false,
-      selector: blockList,
-      loop: true,
-      duration: 1000,
+  } else {
+    blockList.innerHTML = newItem.map(item => adsTemplate(item)).join('');
+    const glider = new Glider(blockList, {
+      slidesToShow: 1,
+      draggable: true,
     });
     setInterval(() => {
-      mySiema.next();
+      glider.scrollItem(glider.page + 1);
     }, 3500);
     arroundBlockList.innerHTML = arroundItem
       .map(item => adsTemplateArround(item))
       .slice(0, 2)
       .join('');
-
     horizontalBlock.innerHTML = arroundItem
       .map(item => adsTemplateArround(item))
       .slice(3, 6)
       .join('');
-    // blockList.classList.add('block__list-show');
-    // arroundBlockList.classList.add('arround-block__list-show');
-    // horizontalBlock.classList.add('horizontal-block-show');
   }
-}
-// =========================================================
-changeSize();
-// =========================================================
+};
+window.addEventListener('resize', throttle(renderAds, 500));
+renderAds();

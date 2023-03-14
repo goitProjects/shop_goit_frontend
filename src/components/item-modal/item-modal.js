@@ -23,15 +23,15 @@ export const funcMarkup = data => {
     heart = document.querySelector('.icon-fav');
     if (api.getFavorites(idItem)) {
       heart.classList.add('icon-fav--active');
-      document.querySelector('.fav-text').textContent = 'Add to favourites';
+      document.querySelector('.fav-text').textContent = 'In favorites';
     } else {
-      document.querySelector('.fav-text').textContent = 'In favourites';
+      document.querySelector('.fav-text').textContent = 'Add to favorites';
       heart.classList.remove('icon-fav--active');
     }
     heart.addEventListener('click', debounce(heartAttack, 300));
   }
   const showSellerBtn = document.querySelector(
-    '.item_modal--tablet--button-buy',
+    '.item_modal--tablet--button-buy'
   );
   const showHideBlock = document.querySelector('.item_modal-seller');
   showSellerBtn.addEventListener('click', changeClassSeller);
@@ -64,7 +64,7 @@ function heartAttack(e) {
       JSON.stringify({
         ...user,
         favorites: [...searchItem],
-      }),
+      })
     );
 
     deleteUserFavourite(userID, idItem, userToken);
@@ -79,7 +79,7 @@ function heartAttack(e) {
       JSON.stringify({
         ...user,
         favorites: [...user.favorites, idItem],
-      }),
+      })
     );
 
     addUserFavourite(userID, idItem, userToken);

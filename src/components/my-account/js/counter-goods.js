@@ -13,9 +13,9 @@ import { ready } from '../../loader/loader';
 
 function removeFavorites() {
   const userFavoritesList = document.querySelector('.selected-goods__list');
-  userFavoritesList.children.forEach(item =>
-    item.addEventListener('click', removeFavoritesItem),
-  );
+  [...userFavoritesList.children].forEach(item => {
+    item.addEventListener('click', removeFavoritesItem);
+  });
 }
 
 function removeFavoritesItem(e) {
@@ -50,7 +50,7 @@ function backendFavouriteRemove(idItem) {
     JSON.stringify({
       ...user,
       favorites: [...searchItem],
-    }),
+    })
   );
 
   deleteUserFavourite(userID, idItem, userToken);
@@ -61,8 +61,8 @@ function backendFavouriteRemove(idItem) {
 function removeUserAds() {
   const userAdsList = document.querySelector('.my-ads__list');
 
-  userAdsList.children.forEach(item =>
-    item.addEventListener('click', removeAdsItem),
+  [...userAdsList.children].forEach(item =>
+    item.addEventListener('click', removeAdsItem)
   );
 }
 
@@ -192,7 +192,7 @@ async function removeAdsItem(e) {
             mySiema.config.perPage = 1;
             mySiema.config.loop = true;
           }
-        }, 300),
+        }, 300)
       );
     } else if (
       window.matchMedia('(min-width: 768px)').matches &&
@@ -227,7 +227,7 @@ async function removeAdsItem(e) {
             mySiemaTablet.config.perPage = 2;
             mySiemaTablet.config.loop = false;
           }
-        }, 300),
+        }, 300)
       );
     } else if (window.matchMedia('(min-width: 1280px)').matches) {
       const mySiemaPC = new Siema({
@@ -259,7 +259,7 @@ async function removeAdsItem(e) {
             mySiemaPC.config.perPage = 4;
             mySiemaPC.config.loop = false;
           }
-        }, 300),
+        }, 300)
       );
     }
     const ulX = document.querySelector(`.${cat}-list`);
@@ -279,14 +279,14 @@ function backendAdvRemove(idItem) {
   const advToDelete = data.allCategories.find(item => item.id === idItem);
   data.allCategories = data.allCategories.filter(item => item.id !== idItem);
   data[advToDelete.category] = data[advToDelete.category].filter(
-    item => item.id !== idItem,
+    item => item.id !== idItem
   );
   localStorage.setItem(
     'user-info',
     JSON.stringify({
       ...user,
       adv: [...newAdv],
-    }),
+    })
   );
   user = JSON.parse(localStorage.getItem('user-info'));
   if (arrayFav.includes(idItem)) {
@@ -296,7 +296,7 @@ function backendAdvRemove(idItem) {
       JSON.stringify({
         ...user,
         favorites: [...newFav],
-      }),
+      })
     );
     // favoritesValue.textContent = userFavoritesList.childElementCount;
   }
