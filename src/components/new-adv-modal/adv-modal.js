@@ -17,13 +17,13 @@ function anonymousRegister() {
 function createAdCheck() {
   if (localStorage.getItem('user-info')) {
     refs.button.forEach(item =>
-      item.removeEventListener('click', anonymousRegister),
+      item.removeEventListener('click', anonymousRegister)
     );
     refs.button.forEach(item => item.addEventListener('click', createModal()));
   } else {
     refs.button.forEach(item => item.removeEventListener('click', createModal));
     refs.button.forEach(item =>
-      item.addEventListener('click', anonymousRegister()),
+      item.addEventListener('click', anonymousRegister())
     );
   }
 }
@@ -47,7 +47,20 @@ function createModal() {
 
   imgLoaderArea = document.querySelector('.adv-modal__product-photos');
   advForm = document.forms.advForm;
-  advForm.addEventListener('change', saveData);
+
+  document
+    .querySelector('.adv-modal__product-select')
+    .addEventListener('change', event => {
+      const productPriceWrap = document.querySelector('.input-wrapper__price');
+
+      event.target.value === 'free'
+        ? productPriceWrap.classList.add('hide-price')
+        : productPriceWrap.classList.remove('hide-price');
+      event.target.value === 'free'
+        ? productPriceWrap.classList.remove('input-wrapper')
+        : productPriceWrap.classList.add('input-wrapper');
+    });
+
   advForm.addEventListener('submit', submitForm);
   imgLoaderArea.addEventListener('click', chooseImgBlock);
   imgLoaderArea.addEventListener('change', previewImg);
@@ -66,15 +79,10 @@ function saveData(event) {
     image: [],
     category: productCategory.value === 'category' ? '' : productCategory.value,
     description: productDescription.value,
-    price: Number(productPrice).toLocaleString(),
+    ...(productCategory.value === 'free'
+      ? {}
+      : { price: Number(productPrice).toLocaleString() }),
   };
-  const productPriceWrap = document.querySelector('.input-wrapper__price');
-  event.target.value === 'free'
-    ? productPriceWrap.classList.add('hide-price')
-    : productPriceWrap.classList.remove('hide-price');
-  event.target.value === 'free'
-    ? productPriceWrap.classList.remove('input-wrapper')
-    : productPriceWrap.classList.add('input-wrapper');
 }
 
 //==================================
@@ -91,6 +99,7 @@ function chooseImgBlock(event) {
 //====================================
 function submitForm(event) {
   event.preventDefault();
+  saveData(event);
   document.querySelector('.img-error').classList.add('hide');
   document.querySelector('.description-error').classList.add('hide');
   document.querySelector('.price-error').classList.add('hide');
@@ -121,19 +130,19 @@ function submitForm(event) {
   const formDataEmpty = new FormData();
   formDataEmpty.set(
     'title',
-    document.querySelector('.adv-modal__product-name').value,
+    document.querySelector('.adv-modal__product-name').value
   );
   formDataEmpty.set(
     'description',
-    document.querySelector('.adv-modal__product-description').value,
+    document.querySelector('.adv-modal__product-description').value
   );
   formDataEmpty.set(
     'price',
-    document.querySelector('.adv-modal__product-price').value,
+    document.querySelector('.adv-modal__product-price').value
   );
   formDataEmpty.set(
     'category',
-    document.querySelector('.adv-modal__product-select').value,
+    document.querySelector('.adv-modal__product-select').value
   );
   formDataEmpty.append('file', document.querySelector('#fp1').files[0]);
   if (document.querySelector('#fp2').files) {
@@ -148,9 +157,7 @@ function submitForm(event) {
   if (document.querySelector('#fp5').files) {
     formDataEmpty.append('file', document.querySelector('#fp5').files[0]);
   }
-  if (document.querySelector('#fp6').files) {
-    formDataEmpty.append('file', document.querySelector('#fp6').files[0]);
-  }
+
   let allImg = event.currentTarget.querySelectorAll('img');
   allImg = Array.from(allImg);
   const allImgArr = allImg
@@ -184,17 +191,24 @@ function submitForm(event) {
     arr[0].dataset.active = true;
   }
   //===============================================
-  api.postAdv(createData.category, formDataEmpty, allImgArr).then(data => {
-    const user = JSON.parse(localStorage.getItem('user-info'));
-    const idAdv = data.id;
-    localStorage.setItem(
-      'user-info',
-      JSON.stringify({
-        ...user,
-        adv: [...user.adv, idAdv],
-      }),
-    );
-  });
+  api
+    .postAdv(createData.category, formDataEmpty, allImgArr)
+    .then(data => {
+      const user = JSON.parse(localStorage.getItem('user-info'));
+      const idAdv = data.id;
+      localStorage.setItem(
+        'user-info',
+        JSON.stringify({
+          ...user,
+          adv: [...user.adv, idAdv],
+        })
+      );
+    })
+    .catch(err => {
+      alert(
+        `${err.message ?? 'Something went wrong, please try again later.'}`
+      );
+    });
   //===============================================
   advForm.reset();
   clearImages(allImg);
@@ -207,8 +221,23 @@ function submitForm(event) {
   // document.querySelector('body').style.overflow = 'unset';
 }
 //=================================
+const validateImg = file => {
+  const isAcceptableFormat =
+    file.type === 'image/png' ||
+    file.type === 'image/jpeg' ||
+    file.type === 'image/jpg';
+  const fileSize = file.size / 1024 / 1024;
+  const isAcceptableSize = fileSize < 0.5;
+  return isAcceptableFormat && isAcceptableSize;
+};
 function previewImg(event) {
   if (event.target === event.currentTarget) {
+    return;
+  }
+  if (!validateImg(event.target.files[0])) {
+    alert(
+      'Picture has to be less than 0.5mb size and *png, *jpg, *jpeg format.'
+    );
     return;
   }
   changeImgBlock(event);
@@ -235,7 +264,7 @@ function changeImgBlock(event) {
   imgTarget.nextElementSibling.classList.remove('choose-this');
   let imgId = Number(event.target.dataset.id);
   imgId += 1;
-  if (imgId > 6) {
+  if (imgId > 5) {
     return;
   }
   const nextImg = document.querySelector(`[data-id="${imgId}"]`);
