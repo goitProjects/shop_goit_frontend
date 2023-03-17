@@ -11,8 +11,24 @@ export function avatarManipulation() {
   clearAvatarBtn.addEventListener('click', resetForDefault);
 }
 
+const validateAvatar = file => {
+  const isAcceptableFormat =
+    file.type === 'image/png' ||
+    file.type === 'image/jpeg' ||
+    file.type === 'image/jpg';
+  const fileSize = file.size / 1024 / 1024;
+  const isAcceptableSize = fileSize < 0.5;
+  return isAcceptableFormat && isAcceptableSize;
+};
+
 function hendleChange(e) {
   const file = e.target.files[0];
+  if (!validateAvatar(file)) {
+    alert(
+      'Avatar picture has to be less than 0.5mb size and *png, *jpg, *jpeg format.'
+    );
+    return;
+  }
   const reader = new FileReader();
   const formData = new FormData();
   formData.append('file', file);
@@ -26,11 +42,14 @@ function hendleChange(e) {
       headers: {
         Authorization: JSON.parse(localStorage.getItem('user-info')).token,
       },
+    }).catch(err => {
+      alert('Something went wrong with avatar upload. Please try again later.');
+      resetForDefault();
     });
+
     // const localUserObj = JSON.parse(localStorage.getItem('user-info'));
     // updateUserAvatar(localUserObj.userId, reader.result, localUserObj.token);
   };
-
   file ? reader.readAsDataURL(file) : resetForDefault();
 }
 
