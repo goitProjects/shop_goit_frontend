@@ -1,3 +1,4 @@
+import { blobToURL, urlToBlob, fromBlob, fromURL } from 'image-resize-compress';
 import { api } from '../services/api';
 import { modalBackDrop } from '../modal-window/logic-modal.js';
 import markupModal from './templates/markup-adv-modal.hbs';
@@ -97,7 +98,29 @@ function chooseImgBlock(event) {
   imgTarget.setAttribute('type', 'file');
 }
 //====================================
-function submitForm(event) {
+
+// ===================================
+const handleBlob = async (blobFile, k = 100) => {
+  const quality = k - 20;
+  const width = 0;
+  const height = 0;
+  const format = '.jpg';
+
+  try {
+    if (blobFile?.size / 1024 / 1024 < 0.5) {
+      return blobFile;
+    }
+    const blob = await fromBlob(blobFile, quality, width, height, format);
+    if (blob.size / 1024 / 1024 > 0.2) {
+      return await handleBlob(blobFile, quality);
+    }
+    return new File([blob], blobFile.name, { type: 'image/jpeg' });
+  } catch (error) {
+    throw new Error('Not allowed file size!\nMust be less then 3.5Mb');
+  }
+};
+// ===================================
+async function submitForm(event) {
   event.preventDefault();
   saveData(event);
   document.querySelector('.img-error').classList.add('hide');
@@ -144,21 +167,36 @@ function submitForm(event) {
     'category',
     document.querySelector('.adv-modal__product-select').value
   );
-  formDataEmpty.append('file', document.querySelector('#fp1').files[0]);
-  if (document.querySelector('#fp2').files) {
-    formDataEmpty.append('file', document.querySelector('#fp2').files[0]);
-  }
-  if (document.querySelector('#fp3').files) {
-    formDataEmpty.append('file', document.querySelector('#fp3').files[0]);
-  }
-  if (document.querySelector('#fp4').files) {
-    formDataEmpty.append('file', document.querySelector('#fp4').files[0]);
-  }
-  if (document.querySelector('#fp5').files) {
-    formDataEmpty.append('file', document.querySelector('#fp5').files[0]);
+  let totalPhotosSize = 0;
+  const addFileToForm = file => formDataEmpty.append('file', file);
+  const formImgListLength = document.querySelector('#js-adv-modal-photos')
+    .childNodes.length;
+  try {
+    const promises = await Array(formImgListLength)
+      .fill(null)
+      .map(async (_, i) => {
+        const file =
+          document.querySelector(`#fp${i + 1}`)?.files &&
+          document.querySelector(`#fp${i + 1}`)?.files[0];
+        if (file) {
+          totalPhotosSize += file.size;
+          const resizedFile = await handleBlob(file);
+          addFileToForm(resizedFile);
+        }
+      })
+      .filter(el => el);
+    if (totalPhotosSize / 1024 / 1024 > 18.5) {
+      throw new Error(
+        'Not allowed files size!\n Every file must be less then 3.5Mb'
+      );
+    }
+    await Promise.all(promises);
+  } catch (error) {
+    alert(error.message);
+    return;
   }
 
-  let allImg = event.currentTarget.querySelectorAll('img');
+  let allImg = event.target.querySelectorAll('img');
   allImg = Array.from(allImg);
   const allImgArr = allImg
     .filter(item => {
@@ -221,28 +259,26 @@ function submitForm(event) {
   // document.querySelector('body').style.overflow = 'unset';
 }
 //=================================
-const validateImg = file => {
+
+const validateImgFormat = file => {
   const isAcceptableFormat =
     file.type === 'image/png' ||
     file.type === 'image/jpeg' ||
     file.type === 'image/jpg';
-  const fileSize = file.size / 1024 / 1024;
-  const isAcceptableSize = fileSize < 0.5;
-  return isAcceptableFormat && isAcceptableSize;
+
+  return isAcceptableFormat;
 };
 function previewImg(event) {
   if (event.target === event.currentTarget) {
     return;
   }
-  if (!validateImg(event.target.files[0])) {
-    alert(
-      'Picture has to be less than 0.5mb size and *png, *jpg, *jpeg format.'
-    );
+  const file = event.target.files[0];
+  if (!validateImgFormat(file)) {
+    alert('Picture has to be *png, *jpg, *jpeg format.');
     return;
   }
   changeImgBlock(event);
   if (event.target.dataset.id) {
-    const file = event.target.files[0];
     const inputID = event.target.dataset.id;
     const img = document.querySelector(`.input-label__img--${inputID}`);
     const reader = new FileReader();

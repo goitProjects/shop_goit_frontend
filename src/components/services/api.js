@@ -62,7 +62,7 @@ export const api = {
           }
 
           data.allCategories = ids.map(id =>
-            data.allCategories.find(adv => adv.id === id),
+            data.allCategories.find(adv => adv.id === id)
           );
           return result;
         })
@@ -255,7 +255,10 @@ export const api = {
         }
         return res.data;
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log('error_from_api', err);
+        throw err;
+      });
   },
 
   getAllGoods() {
@@ -314,7 +317,7 @@ export const api = {
       JSON.stringify({
         ...user,
         favorites: [...user.favorites, id],
-      }),
+      })
     );
   },
   getFavorites(id) {
@@ -353,7 +356,7 @@ export const api = {
   },
   filterFavAdv(favArr) {
     const favorites = data.allCategories.filter(item =>
-      favArr.includes(item.id),
+      favArr.includes(item.id)
     );
     return favorites;
   },
@@ -448,10 +451,10 @@ function test(word) {
   if (list) {
     list.insertAdjacentHTML('beforeend', catPop(dataII));
     const slidePrev = document.querySelector(
-      `.${category}-wrapper .slide-prev`,
+      `.${category}-wrapper .slide-prev`
     );
     const slideNext = document.querySelector(
-      `.${category}-wrapper .slide-next`,
+      `.${category}-wrapper .slide-next`
     );
 
     if (window.matchMedia('(max-width: 767px)').matches) {
@@ -484,7 +487,7 @@ function test(word) {
             mySiema.config.perPage = 1;
             mySiema.config.loop = true;
           }
-        }, 300),
+        }, 300)
       );
     } else if (
       window.matchMedia('(min-width: 768px)').matches &&
@@ -519,7 +522,7 @@ function test(word) {
             mySiemaTablet.config.perPage = 2;
             mySiemaTablet.config.loop = false;
           }
-        }, 300),
+        }, 300)
       );
     } else if (window.matchMedia('(min-width: 1280px)').matches) {
       const mySiemaPC = new Siema({
@@ -551,7 +554,7 @@ function test(word) {
             mySiemaPC.config.perPage = 4;
             mySiemaPC.config.loop = false;
           }
-        }, 300),
+        }, 300)
       );
     }
     const ulX = document.querySelector(`.${word}-list`);
